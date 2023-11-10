@@ -37,8 +37,13 @@ target_compile_definitions(
 ### FIND PACKAGE DEPENDENCIES ####
 ##################################
 
-find_package(OpenGL REQUIRED OpenGL)
-target_link_libraries(${LIBRARY_NAME} PRIVATE OpenGL::GL)
+if (EMSCRIPTEN)
+  target_link_options(${LIBRARY_NAME} PUBLIC -sUSE_WEBGL2=1 -sALLOW_MEMORY_GROWTH)
+  target_link_options(${LIBRARY_NAME} PUBLIC "SHELL: --embed-file ${CMAKE_CURRENT_SOURCE_DIR}/etc/sokol/@/etc/sokol/")
+else()
+  find_package(OpenGL REQUIRED OpenGL)
+  target_link_libraries(${LIBRARY_NAME} PRIVATE OpenGL::GL)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   message(FATAL_ERROR "IMPLEMENT ME")
